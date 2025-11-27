@@ -1,0 +1,70 @@
+from collections import deque
+import time
+
+# Laberinto del ejercicio
+# 0 = libre, 1 = muro
+MAZE = [
+    [1,0,1,1,1,1,1,1,1,1,1],
+    [1,0,1,0,0,0,0,0,0,0,1],
+    [1,0,1,0,1,0,1,1,1,0,1],
+    [1,0,1,0,1,0,0,0,1,0,1],
+    [1,0,1,1,1,0,1,0,1,0,1],
+    [1,0,0,0,1,0,1,0,1,0,1],
+    [1,0,1,0,1,0,1,0,1,1,1],
+    [1,0,1,0,1,0,1,0,0,0,1],
+    [1,0,1,0,1,1,1,0,1,0,1],
+    [1,0,1,0,0,0,0,0,1,0,1],
+    [1,1,1,1,1,1,1,1,1,0,1],
+]
+
+# Coordenadas inicio y meta (fila, columna)
+START = (0, 1)
+END   = (10, 9)
+
+
+def solve_maze_bfs(maze, start, end):
+    """
+    Resuelve el laberinto usando BFS.
+
+    Regresa:
+        path: lista con el camino desde start hasta end
+        visited_order: lista con los nodos visitados en orden
+        elapsed: tiempo de ejecución en segundos
+    """
+    rows, cols = len(maze), len(maze[0])
+
+    start_time = time.time()
+
+    queue = deque([(start, [start])])
+    visited = set([start])
+    visited_order = []
+
+    while queue:
+        (r, c), path = queue.popleft()
+
+        # Registrar nodo visitado
+        visited_order.append((r, c))
+
+        # ¿Llegamos a la meta?
+        if (r, c) == end:
+            elapsed = time.time() - start_time
+            return path, visited_order, elapsed
+
+        # Movimientos: arriba, abajo, izquierda, derecha
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nr, nc = r + dr, c + dc
+
+            if (
+                0 <= nr < rows and
+                0 <= nc < cols and
+                maze[nr][nc] == 0 and
+                (nr, nc) not in visited
+            ):
+                visited.add((nr, nc))
+                new_path = list(path)
+                new_path.append((nr, nc))
+                queue.append(((nr, nc), new_path))
+
+    # No se encontró camino
+    elapsed = time.time() - start_time
+    return None, visited_order, elapsed
