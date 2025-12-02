@@ -94,3 +94,37 @@ def solve_maze_bfs(maze, start, end):
     # No se encontró camino
     elapsed = time.time() - start_time
     return None, visited_order, elapsed
+
+def solve_maze_dfs(maze, start, end):
+    import time
+    rows, cols = len(maze), len(maze[0])
+    start_time = time.perf_counter()
+
+    stack = [(start, [start])]
+    visited = set([start])
+    visited_order = []
+
+    while stack:
+        (r, c), path = stack.pop()
+        visited_order.append((r, c))
+
+        if (r, c) == end:
+            elapsed = time.perf_counter() - start_time
+            return path, visited_order, elapsed
+
+        # Orden de exploración DFS
+        for dr, dc in [(-1,0), (1,0), (0,-1), (0,1)]:
+            nr, nc = r + dr, c + dc
+
+            if (
+                0 <= nr < rows and
+                0 <= nc < cols and
+                maze[nr][nc] == 0 and
+                (nr, nc) not in visited
+            ):
+                visited.add((nr, nc))
+                stack.append(((nr, nc), path + [(nr, nc)]))
+
+    elapsed = time.perf_counter() - start_time
+    return None, visited_order, elapsed
+
