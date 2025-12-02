@@ -45,7 +45,7 @@ MAZE = [
 
 # Coordenadas inicio y meta (fila, columna)
 START = (0, 1)
-END   = (10, 9)
+END   = (31, 38)
 
 
 def solve_maze_bfs(maze, start, end):
